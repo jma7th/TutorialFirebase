@@ -2,8 +2,7 @@
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true"
-    >
+    android:fillViewport="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -12,8 +11,6 @@
         android:background="@drawable/background"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-
-
         tools:context=".LoginActivity">
 
         <TextView
@@ -27,17 +24,14 @@
             android:layout_marginTop="100dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            />
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <View
             android:id="@+id/containerComponents"
             style="@style/ContainerComponents"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/title_cadastro"
-
-            />
+            app:layout_constraintTop_toBottomOf="@id/title_cadastro"/>
 
         <EditText
             style="@style/Edit_Text"
@@ -48,8 +42,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="@id/containerComponents"
             app:layout_constraintEnd_toEndOf="@id/containerComponents"
-            app:layout_constraintTop_toTopOf="@id/containerComponents"
-            />
+            app:layout_constraintTop_toTopOf="@id/containerComponents"/>
 
         <EditText
             style="@style/Edit_Text"
@@ -61,8 +54,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="@id/containerComponents"
             app:layout_constraintEnd_toEndOf="@id/containerComponents"
-            app:layout_constraintTop_toBottomOf="@id/edit_nome"
-            />
+            app:layout_constraintTop_toBottomOf="@id/edit_nome"/>
 
         <EditText
             style="@style/Edit_Text"
@@ -74,18 +66,16 @@
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="@id/containerComponents"
             app:layout_constraintEnd_toEndOf="@id/containerComponents"
-            app:layout_constraintTop_toBottomOf="@id/edit_email"
-            />
+            app:layout_constraintTop_toBottomOf="@id/edit_email"/>
 
         <androidx.appcompat.widget.AppCompatButton
             style="@style/Button"
-            android:id="@+id/btn_entrar"
+            android:id="@+id/btn_cadastrar"
             android:text="@string/cadastrar"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/edit_senha"
-            />
-
+            app:layout_constraintBottom_toTopOf="@id/progressbar"/>
 
         <ProgressBar
             android:id="@+id/progressbar"
@@ -95,8 +85,8 @@
             android:visibility="invisible"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/containerComponents"
-            />
+            app:layout_constraintTop_toBottomOf="@id/btn_cadastrar"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

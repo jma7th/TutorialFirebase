@@ -1,22 +1,38 @@
 package com.example.tutorialfirebase;
 
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.content.Intent;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.Firebase;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 import java.util.Objects;
 
 public class LoginActivity extends AppCompatActivity {
     private TextView text_tela_cadastro;
+    private TextView edit_email, edit_senha;
     private Button btn_entrar;
+    private ProgressBar progress_bar;
+    String[] mensagens = {"Preencha todos os campos", "Login realizado com sucesso", "Erro ao realizar login"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,14 +64,79 @@ public class LoginActivity extends AppCompatActivity {
         btn_entrar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(LoginActivity.this, PerfilActivity.class);
-                startActivity(intent);
+
+                String email = edit_email.getText().toString();
+                String senha = edit_senha.getText().toString();
+
+                if (email.isEmpty() || senha.isEmpty()) {
+                    Toast toast = Toast.makeText(LoginActivity.this, mensagens[0], Toast.LENGTH_SHORT);
+                    Objects.requireNonNull(toast.getView()).setBackgroundTintList(ColorStateList.valueOf(Color.WHITE));
+                    TextView text = toast.getView().findViewById(android.R.id.message);
+                    text.setTextColor(Color.BLACK);
+                    toast.show();
+                } else {
+                    AutenticarUsuario(v);
+                }
             }
         });
     }
 
+    private void AutenticarUsuario(View view) {
+
+        String email = edit_email.getText().toString();
+        String senha = edit_senha.getText().toString();
+
+        FirebaseAuth.getInstance().signInWithEmailAndPassword(email, senha).addOnCompleteListener((new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    progress_bar.setVisibility(View.VISIBLE);
+
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            IrParaPerfilActivity();
+                        }
+                    }, 2000);
+                } else {
+                    String erro;
+
+                    try {
+                        throw task.getException();
+                    } catch (Exception e) {
+                        erro = "Erro ao realizar login";
+                    }
+                    Toast toast = Toast.makeText(LoginActivity.this, erro, Toast.LENGTH_SHORT);
+                    Objects.requireNonNull(toast.getView()).setBackgroundTintList(ColorStateList.valueOf(Color.WHITE));
+                    TextView text = toast.getView().findViewById(android.R.id.message);
+                    text.setTextColor(Color.BLACK);
+                    toast.show();
+                }
+            }
+        }));
+    }
+
+    @Override
+    protected void onStart(){
+        super.onStart();
+
+        FirebaseUser usuarioAtual = FirebaseAuth.getInstance().getCurrentUser();
+
+        if (usuarioAtual != null) {
+            IrParaPerfilActivity();
+        }
+    }
+
+    private void IrParaPerfilActivity() {
+        Intent intent = new Intent(LoginActivity.this, PerfilActivity.class);
+        startActivity(intent);
+    }
+
     private void IniciarComponentes(){
         text_tela_cadastro = findViewById(R.id.text_tela_cadastro);
+        edit_email = findViewById(R.id.edit_email);
+        edit_senha = findViewById(R.id.edit_senha);
         btn_entrar = findViewById(R.id.btn_entrar);
+        progress_bar = findViewById(R.id.progress_bar);
     }
 }
