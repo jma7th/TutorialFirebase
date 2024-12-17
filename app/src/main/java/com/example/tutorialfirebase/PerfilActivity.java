@@ -14,6 +14,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -61,20 +62,40 @@ public class PerfilActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-
-        String email = FirebaseAuth.getInstance().getCurrentUser().getEmail();
-        usuarioID = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
-        DocumentReference documentReference = db.collection("Usuarios").document(usuarioID);
-        documentReference.addSnapshotListener(new EventListener<DocumentSnapshot>() {
-            @Override
-            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException error) {
-                if (documentSnapshot != null){
-                    perfil_nome.setText(documentSnapshot.getString("nome"));
-                    perfil_email.setText(email);
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null) {
+            String loginMethod = getSharedPreferences("LoginPrefs", MODE_PRIVATE).getString("loginMethod", "email");
+            if ("google".equals(loginMethod)) {
+                String googleAccountName = getIntent().getStringExtra("googleAccountName");
+                String googleAccountEmail = getIntent().getStringExtra("googleAccountEmail");
+                if (googleAccountName != null && googleAccountEmail != null) {
+                    perfil_nome.setText(googleAccountName);
+                    perfil_email.setText(googleAccountEmail);
+                } else {
+                    // Fallback to Firebase user info if intent extras are not available
+                    perfil_nome.setText(currentUser.getDisplayName());
+                    perfil_email.setText(currentUser.getEmail());
                 }
+            } else {
+                String email = currentUser.getEmail();
+                usuarioID = currentUser.getUid();
+
+                DocumentReference documentReference = db.collection("Usuarios").document(usuarioID);
+                documentReference.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException error) {
+                        if (documentSnapshot != null && documentSnapshot.exists()) {
+                            perfil_nome.setText(documentSnapshot.getString("nome"));
+                            perfil_email.setText(email);
+                        }
+                    }
+                });
             }
-        });
+        } else {
+            // Handle the case where the user is not logged in
+            perfil_nome.setText("User not logged in");
+            perfil_email.setText("");
+        }
     }
 
     private void IniciarComponentes(){

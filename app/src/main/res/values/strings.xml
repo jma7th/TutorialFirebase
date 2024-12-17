@@ -7,4 +7,5 @@
     <string name="label_cadastro_nome">Nome</string>
     <string name="label_cadastro_email">Email</string>
     <string name="label_cadastro_senha">Senha</string>
+    <string name="login_google">Entrar com Google</string>
 </resources>
