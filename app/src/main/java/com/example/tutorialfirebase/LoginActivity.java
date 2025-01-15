@@ -125,7 +125,7 @@ public class LoginActivity extends AppCompatActivity {
         FirebaseUser usuarioAtual = FirebaseAuth.getInstance().getCurrentUser();
 
         if (usuarioAtual != null) {
-            IrParaPerfilActivity();
+            IrParaMainActivity();
         }
 
         // Configure Google One Tap Sign-In
@@ -213,6 +213,11 @@ public class LoginActivity extends AppCompatActivity {
 
     private void IrParaPerfilActivity() {
         Intent intent = new Intent(LoginActivity.this, PerfilActivity.class);
+        startActivity(intent);
+    }
+
+    private void IrParaMainActivity() {
+        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
         startActivity(intent);
     }
 
